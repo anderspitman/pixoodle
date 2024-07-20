@@ -39,6 +39,8 @@ const template = `
   </style>
 
   <div class='grid-editor'>
+    <div class='grid'>
+    </div>
   </div>
 `;
 
@@ -62,9 +64,7 @@ class GridEditor extends HTMLElement {
 
     const root = docFrag.querySelector('.grid-editor');
 
-    const gridEl = document.createElement('div');
-    gridEl.classList.add('grid');
-    root.appendChild(gridEl);
+    const gridEl = docFrag.querySelector('.grid');
 
     const numRows = 8;
     const numCols = 8;
