@@ -3,9 +3,27 @@ import { commonCss } from './common.js';
 const template = `
   <style>
     ${commonCss}
+
+    .editor {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    pixoodle-grid-editor {
+      flex: 3;
+    }
+
+    pixoodle-palette {
+      flex: 1;
+    }
   </style>
 
-  <pixoodle-grid-editor></pixoodle-grid-editor>
+  <div class='editor'>
+    <pixoodle-grid-editor></pixoodle-grid-editor>
+    <pixoodle-palette></pixoodle-palette>
+  </div>
 `;
 
 let templateEl;
@@ -26,9 +44,12 @@ class Editor extends HTMLElement {
 
     const docFrag = templateEl.content.cloneNode(true);
 
-    console.log(docFrag);
+    const palette = docFrag.querySelector('pixoodle-palette');
+    const gridEditor = docFrag.querySelector('pixoodle-grid-editor');
 
-    const root = docFrag.querySelector('.editor');
+    palette.addEventListener('colors-selected', (evt) => {
+      gridEditor.colors = evt.detail.colors;
+    });
 
     this.shadowRoot.appendChild(docFrag);
   }

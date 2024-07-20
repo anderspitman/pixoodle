@@ -31,6 +31,7 @@ const template = `
       width: 32px;
       height: 32px;
       display: inline-block;
+      border: 1px solid black;
     }
     .cell:hover {
       background-color: #999;
@@ -50,7 +51,19 @@ class GridEditor extends HTMLElement {
   constructor() {
     super();
 
+    this.colors = ['black','white'];
+    this.colorIdx = 0;
+
     this.attachShadow({ mode: 'open' });
+  }
+
+  get colors() {
+    // TODO: detect attribute changes so we don't have to deserialize every time
+    return JSON.parse(this.getAttribute('colors'));
+  }
+  set colors(_) {
+    this.colorIdx = 0;
+    this.setAttribute('colors', JSON.stringify(_));
   }
 
   connectedCallback() {
@@ -69,6 +82,9 @@ class GridEditor extends HTMLElement {
     const numRows = 8;
     const numCols = 8;
 
+    const initColors = this.colors;
+    const initColor = initColors[initColors.length - 1]
+
     for (let i=0; i<numRows; i++) {
       const rowEl = document.createElement('div');
       rowEl.classList.add('row');
@@ -79,15 +95,38 @@ class GridEditor extends HTMLElement {
         cellEl.classList.add('cell');
         rowEl.appendChild(cellEl);
 
+        cellEl.dataset.color = initColor;
+        cellEl.style['background-color'] = initColor;
+
         cellEl.addEventListener('click', (evt) => {
-          if (cellEl.style['background-color'] === 'black') {
-            cellEl.style['background-color'] = 'white';
-          }
-          else {
-            cellEl.style['background-color'] = 'black';
-          }
+          const nextColor = getNextColor(cellEl, this.colors);
+          cellEl.dataset.color = nextColor;
+          cellEl.style['background-color'] = nextColor;
+        });
+
+        cellEl.addEventListener('pointerenter', (evt) => {
+          const nextColor = getNextColor(cellEl, this.colors);
+          cellEl.style['background-color'] = nextColor;
+        });
+        cellEl.addEventListener('pointerleave', (evt) => {
+          cellEl.style['background-color'] = cellEl.dataset.color;
         });
       }
+    }
+
+    function getNextColor(el, colors) {
+
+      const curColor = el.dataset.color;
+
+      for (let i=0; i<colors.length; i++) {
+        const color = colors[i];
+        if (curColor === color) {
+          const nextColorIdx = (i + 1) % colors.length;
+          return colors[nextColorIdx];
+        }
+      }
+
+      return colors[0];
     }
 
     let scale = 1.0;
