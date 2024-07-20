@@ -104,11 +104,11 @@ class GridEditor extends HTMLElement {
           cellEl.style['background-color'] = nextColor;
         });
 
-        cellEl.addEventListener('pointerenter', (evt) => {
+        cellEl.addEventListener('mouseover', (evt) => {
           const nextColor = getNextColor(cellEl, this.colors);
           cellEl.style['background-color'] = nextColor;
         });
-        cellEl.addEventListener('pointerleave', (evt) => {
+        cellEl.addEventListener('mouseout', (evt) => {
           cellEl.style['background-color'] = cellEl.dataset.color;
         });
       }
