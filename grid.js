@@ -140,18 +140,50 @@ class GridEditor extends HTMLElement {
     let prevPx = px;
     let prevPy = py;
 
-    root.addEventListener('pointerdown', () => {
+    const evCache = [];
+    let prevDist = -1;
+
+    root.addEventListener('pointerdown', (evt) => {
+
+      evCache.push(evt);
+
       pointerDown = true;
     });
 
-    root.addEventListener('pointerup', () => {
+    root.addEventListener('pointerup', (evt) => {
+
+      const index = evCache.findIndex(
+        (cachedEv) => cachedEv.pointerId === evt.pointerId,
+      );
+      evCache.splice(index, 1);
+      if (evCache.length < 2) {
+        prevDist = -1;
+      }
+
       pointerDown = false;
       prevPx = 0;
       prevPy = 0;
     });
 
     root.addEventListener('pointermove', (evt) => {
-      if (pointerDown) {
+
+      const index = evCache.findIndex(
+        (cachedEv) => cachedEv.pointerId === evt.pointerId,
+      );
+      evCache[index] = evt;
+
+      if (evCache.length === 2) {
+        // zoom functionality copied from here: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
+        const dist = distance(evCache[0], evCache[1]);
+
+        if (prevDist > 0) {
+          zoom(dist - prevDist);
+        }
+
+        prevDist = dist;
+      }
+      else if (pointerDown) {
+        // pan
         px = evt.x;
         py = evt.y;
 
@@ -180,8 +212,12 @@ class GridEditor extends HTMLElement {
 
     root.addEventListener('wheel', (evt) => {
       evt.preventDefault();
+      zoom(-evt.deltaY * 0.2);
+    });
 
-      scale += evt.deltaY * -0.001;
+    function zoom(amount) {
+
+      scale += amount * 0.01;
       if (scale < 0.1) {
         scale = 0.1;
       }
@@ -190,8 +226,7 @@ class GridEditor extends HTMLElement {
       }
 
       updateTransform();
-
-    });
+    }
 
     function updateTransform() {
       gridEl.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
@@ -199,6 +234,16 @@ class GridEditor extends HTMLElement {
 
     this.shadowRoot.appendChild(docFrag);
   }
+}
+
+function distance(p1, p2) {
+  return Math.sqrt(squaredDistance(p1, p2));
+}
+
+function squaredDistance(p1, p2) {
+  const xDiff = p2.clientX - p1.clientX;
+  const yDiff = p2.clientY - p1.clientY;
+  return xDiff*xDiff + yDiff*yDiff;
 }
 
 
