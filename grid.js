@@ -13,6 +13,7 @@ const template = `
       align-items: center;
       overflow: hidden;
       border: 1px solid black;
+      touch-action: none;
     }
 
     .grid {
@@ -173,6 +174,9 @@ class GridEditor extends HTMLElement {
         updateTransform();
       }
     });
+
+    // Disable default browser zoom (specifically for desktop)
+    root.addEventListener('touchmove', evt => evt.preventDefault());
 
     root.addEventListener('wheel', (evt) => {
       evt.preventDefault();
