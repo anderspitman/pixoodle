@@ -19,11 +19,11 @@ const template = `
   </style>
 
   <div class='picker'>
-    <pixoodle-slider id='hue-slider' min='0' max='360'
+    <pixoodle-slider id='hue-slider' min='0' max='360' value='0'
       background='linear-gradient(to right,hsl(0,100%,50%),hsl(60,100%,50%),hsl(120,100%,50%),hsl(180,100%,50%),hsl(240,100%,50%),hsl(300,100%,50%),hsl(360,100%,50%))'
     ></pixoodle-slider>
-    <pixoodle-slider id='saturation-slider' min='0' max='100'></pixoodle-slider>
-    <pixoodle-slider id='lightness-slider' min='0' max='100'></pixoodle-slider>
+    <pixoodle-slider id='saturation-slider' min='0' max='100' value='100'></pixoodle-slider>
+    <pixoodle-slider id='lightness-slider' min='0' max='100' value='50'></pixoodle-slider>
 
     <div class='swatch'>
     </div>
@@ -51,34 +51,39 @@ class Picker extends HTMLElement {
     const hueSlider = docFrag.querySelector('#hue-slider');
     const satSlider = docFrag.querySelector('#saturation-slider');
     const lightSlider = docFrag.querySelector('#lightness-slider');
-
     const swatchEl = docFrag.querySelector('.swatch');
 
-    let hue;
+    this.shadowRoot.appendChild(docFrag);
+
     hueSlider.addEventListener('input', (evt) => {
-      hue = String(evt.target.value);
-      satSlider.background = `linear-gradient(to right, white, hsl(${hue}, 100%, 50%))`;
-      lightSlider.background = `linear-gradient(to right, black, hsl(${hue}, 100%, 50%), white)`;
+      updateSliders();
       updateColor();
     });
 
-    let saturation;
     satSlider.addEventListener('input', (evt) => {
-      saturation = String(evt.target.value);
       updateColor();
     });
 
-    let lightness;
     lightSlider.addEventListener('input', (evt) => {
-      lightness = String(evt.target.value);
       updateColor();
     });
 
     function updateColor() {
+      const hue = hueSlider.value;
+      const saturation = satSlider.value;
+      const lightness = lightSlider.value;
       swatchEl.style['background-color'] = `hsl(${hue} ${saturation}% ${lightness}%)`;
     }
 
-    this.shadowRoot.appendChild(docFrag);
+    function updateSliders() {
+      const hue = hueSlider.value;
+      satSlider.background = `linear-gradient(to right, white, hsl(${hue}, 100%, 50%))`;
+      lightSlider.background = `linear-gradient(to right, black, hsl(${hue}, 100%, 50%), white)`;
+    }
+
+    updateSliders();
+    updateColor();
+    
   }
 }
 

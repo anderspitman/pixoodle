@@ -33,17 +33,24 @@ class Slider extends HTMLElement {
   }
 
   get min() {
-    return this.getAttribute('min');
+    return this._slider.min;
   }
   set min(_) {
-    this.setAttribute('min', _);
+    this._slider.min = _;
   }
 
   get max() {
-    return this.getAttribute('max');
+    return this._slider.max;
   }
   set max(_) {
-    this.setAttribute('max', _);
+    this._slider.max = _;
+  }
+
+  get value() {
+    return this._slider.value;
+  }
+  set value(_) {
+    this._slider.value = _;
   }
 
   get background() {
@@ -63,12 +70,13 @@ class Slider extends HTMLElement {
 
     const docFrag = templateEl.content.cloneNode(true);
 
-    const slider = docFrag.querySelector('input');
+    this._slider = docFrag.querySelector('input');
 
-    slider.setAttribute('min', this.min);
-    slider.setAttribute('max', this.max);
+    this.min = this.getAttribute('min');
+    this.max = this.getAttribute('max');
+    this.value = this.getAttribute('value');
 
-    slider.addEventListener('input', (evt) => {
+    this._slider.addEventListener('input', (evt) => {
       this.value = evt.target.value;
     });
 
