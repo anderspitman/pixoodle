@@ -26,7 +26,7 @@ const template = `
   </style>
 
   <div class='editor'>
-    <pixoodle-grid-editor></pixoodle-grid-editor>
+    <pixoodle-grid-editor color='white'></pixoodle-grid-editor>
     <div class='color-container'>
       <pixoodle-palette></pixoodle-palette>
       <pixoodle-color-picker></pixoodle-color-picker>
@@ -58,10 +58,8 @@ class Editor extends HTMLElement {
     const picker = docFrag.querySelector('pixoodle-color-picker');
     const setPrimaryBtn = docFrag.querySelector('#set-primary-btn');
 
-    this.shadowRoot.appendChild(docFrag);
-
-    palette.addEventListener('colors-selected', (evt) => {
-      gridEditor.colors = evt.detail.colors;
+    palette.addEventListener('swatch-selected', (evt) => {
+      gridEditor.color = evt.detail.color;
     });
 
     let color;
@@ -71,11 +69,11 @@ class Editor extends HTMLElement {
 
     setPrimaryBtn.addEventListener('click', (evt) => {
       if (color) {
-        const colors = gridEditor.colors;
-        colors[0] = color.hex;
-        gridEditor.colors = colors;
+        gridEditor.color = color.hex;
       }
     });
+
+    this.shadowRoot.appendChild(docFrag);
   }
 }
 

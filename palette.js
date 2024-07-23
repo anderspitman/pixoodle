@@ -21,11 +21,6 @@ const template = `
 
   <div class='colors'>
   </div>
-  <div class='color-pickers'>
-    <input class='color-picker' type='color' />
-    <input class='color-picker' type='color' />
-    <input class='color-picker' type='color' />
-  <div>
 `;
 
 let templateEl;
@@ -51,7 +46,8 @@ class Palette extends HTMLElement {
       ['#ff0000', '#00ff00', '#0000ff'],
     ];
 
-    let selectedIdx = 0;
+    let selectedPaletteIdx = 0;
+    let selectedSwatchIdx = 0;
 
     const colorsEl = docFrag.querySelector('.colors');
 
@@ -63,43 +59,22 @@ class Palette extends HTMLElement {
       colorListEl.classList.add('color-list');
       colorsEl.appendChild(colorListEl);
 
-      colorListEl.addEventListener('click', (evt) => {
-
-        selectedIdx = i;
-
-        updatePickers();
-        updateColors();
-      });
-
-      for (const color of colors) {
+      for (let j=0; j<colors.length; j++) {
+        const color = colors[j];
         const colorEl = document.createElement('div');
         colorEl.classList.add('color');
         colorListEl.appendChild(colorEl);
         colorEl.style['background-color'] = color;
+
+        colorEl.addEventListener('click', (evt) => {
+
+          selectedPaletteIdx = i;
+          selectedSwatchIdx = j;
+
+          updateColors();
+        });
       }
     }
-
-    const pickersContainerEl = docFrag.querySelector('.color-pickers');
-    const pickerEls = pickersContainerEl.querySelectorAll('.color-picker');
-
-    for (let i=0; i<pickerEls.length; i++) {
-      const pickerEl = pickerEls[i];
-
-      pickerEl.addEventListener('change', (evt) => {
-        const color = evt.target.value;
-        allColors[selectedIdx][i] = color;
-        updateColors();
-      });
-    }
-
-    const updatePickers = () => {
-
-      for (let i=0; i<pickerEls.length; i++) {
-        const pickerEl = pickerEls[i];
-
-        pickerEl.value = allColors[selectedIdx][i];
-      }
-    };
 
     const updateColors = () => {
       const colorListEls = colorsEl.querySelectorAll('.color-list');
@@ -115,16 +90,15 @@ class Palette extends HTMLElement {
 
       }
 
-      this.shadowRoot.dispatchEvent(new CustomEvent('colors-selected', {
+      this.shadowRoot.dispatchEvent(new CustomEvent('swatch-selected', {
         bubbles: true,
         composed: true,
         detail: {
-          colors: allColors[selectedIdx],
+          color: allColors[selectedPaletteIdx][selectedSwatchIdx],
         },
       }));
     };
 
-    updatePickers();
     updateColors();
 
     this.shadowRoot.appendChild(docFrag);
