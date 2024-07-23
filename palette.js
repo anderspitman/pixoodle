@@ -32,6 +32,14 @@ class Palette extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
+  get currentSwatchColor() {
+    return this._currentSwatchColor;
+  }
+  set currentSwatchColor(_) {
+    this._currentSwatchColor = _;
+    this._setCurrentSwatchColor();
+  }
+
   connectedCallback() {
 
     if (!templateEl) {
@@ -76,6 +84,11 @@ class Palette extends HTMLElement {
       }
     }
 
+    this._setCurrentSwatchColor  = () => {
+      allColors[selectedPaletteIdx][selectedSwatchIdx] = this._currentSwatchColor;
+      updateColors();
+    }
+
     const updateColors = () => {
       const colorListEls = colorsEl.querySelectorAll('.color-list');
       for (let i=0; i<colorListEls.length; i++) {
@@ -90,7 +103,7 @@ class Palette extends HTMLElement {
 
       }
 
-      this.shadowRoot.dispatchEvent(new CustomEvent('swatch-selected', {
+      this.shadowRoot.dispatchEvent(new CustomEvent('swatch-change', {
         bubbles: true,
         composed: true,
         detail: {
