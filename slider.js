@@ -2,13 +2,7 @@ import { commonCss } from './common.js';
 
 const template = `
   <style>
-    :host {
-      display: block;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
+    ${commonCss}
 
     .slider {
       width: fit-content;

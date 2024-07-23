@@ -4,6 +4,11 @@ const template = `
   <style>
     ${commonCss}
 
+    :host {
+      width: 100%;
+      height: 100%;
+    }
+
     .editor {
       width: 100%;
       height: 100%;
@@ -22,8 +27,10 @@ const template = `
 
   <div class='editor'>
     <pixoodle-grid-editor></pixoodle-grid-editor>
-    <pixoodle-palette></pixoodle-palette>
-    <pixoodle-color-picker></pixoodle-color-picker>
+    <div>
+      <pixoodle-palette></pixoodle-palette>
+      <pixoodle-color-picker></pixoodle-color-picker>
+    <div>
   </div>
 `;
 
