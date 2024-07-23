@@ -17,19 +17,20 @@ const template = `
     }
 
     pixoodle-grid-editor {
-      flex: 3;
+      flex: 2;
     }
 
-    pixoodle-palette {
+    .color-container {
       flex: 1;
     }
   </style>
 
   <div class='editor'>
     <pixoodle-grid-editor></pixoodle-grid-editor>
-    <div>
+    <div class='color-container'>
       <pixoodle-palette></pixoodle-palette>
       <pixoodle-color-picker></pixoodle-color-picker>
+      <button id='set-primary-btn'>Set Primary</button>
     <div>
   </div>
 `;
@@ -54,12 +55,27 @@ class Editor extends HTMLElement {
 
     const palette = docFrag.querySelector('pixoodle-palette');
     const gridEditor = docFrag.querySelector('pixoodle-grid-editor');
+    const picker = docFrag.querySelector('pixoodle-color-picker');
+    const setPrimaryBtn = docFrag.querySelector('#set-primary-btn');
+
+    this.shadowRoot.appendChild(docFrag);
 
     palette.addEventListener('colors-selected', (evt) => {
       gridEditor.colors = evt.detail.colors;
     });
 
-    this.shadowRoot.appendChild(docFrag);
+    let color;
+    picker.addEventListener('color-changed', (evt) => {
+      color = evt.detail.color;
+    });
+
+    setPrimaryBtn.addEventListener('click', (evt) => {
+      if (color) {
+        const colors = gridEditor.colors;
+        colors[0] = color.hex;
+        gridEditor.colors = colors;
+      }
+    });
   }
 }
 

@@ -13,7 +13,8 @@ const template = `
       appearance: none;
       background: transparent;
       cursor: pointer;
-      width: 15rem;
+      width: 20rem;
+      height: 1.5rem;
     }
 
   </style>

@@ -116,12 +116,12 @@ class Palette extends HTMLElement {
       }
 
       this.shadowRoot.dispatchEvent(new CustomEvent('colors-selected', {
-          bubbles: true,
-          composed: true,
-          detail: {
-            colors: allColors[selectedIdx],
-          },
-        }));
+        bubbles: true,
+        composed: true,
+        detail: {
+          colors: allColors[selectedIdx],
+        },
+      }));
     };
 
     updatePickers();
