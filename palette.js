@@ -6,17 +6,16 @@ const template = `
 
     .color-list {
       display: flex;
-      border: 1px solid black;
-      cursor: pointer;
-    }
-    .color-list:hover {
-      border: 1px solid white;
     }
 
     .color {
       width: 32px;
       height: 32px;
+      cursor: pointer;
       border: 1px solid black;
+    }
+    .color:hover {
+      border: 2px solid black;
     }
 
   </style>
