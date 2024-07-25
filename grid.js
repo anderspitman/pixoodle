@@ -64,6 +64,16 @@ class GridEditor extends HTMLElement {
     this.setAttribute('color', _);
   }
 
+  get grid() {
+    return this._grid;
+  }
+  set grid(_) {
+    this._grid = _;
+    if (this._render) {
+      this._render();
+    }
+  }
+
   connectedCallback() {
 
     if (!templateEl) {
@@ -80,21 +90,33 @@ class GridEditor extends HTMLElement {
     const numRows = 8;
     const numCols = 8;
 
+    this.grid = [];
+
     for (let i=0; i<numRows; i++) {
+
+      const row = [];
+      this.grid.push(row);
+
       const rowEl = document.createElement('div');
       rowEl.classList.add('row');
       gridEl.appendChild(rowEl);
 
       for (let j=0; j<numCols; j++) {
+
+        const cell = {
+          color: this.color,
+        };
+        row.push(cell);
+
         const cellEl = document.createElement('div');
         cellEl.classList.add('cell');
         rowEl.appendChild(cellEl);
 
-        cellEl.dataset.color = this.color;
-        cellEl.style['background-color'] = this.color;
-
         cellEl.addEventListener('click', (evt) => {
-          cellEl.dataset.color = this.color;
+          cell.color = this.color;
+          row[j] = {
+            color: this.color
+          };
           cellEl.style['background-color'] = this.color;
         });
 
@@ -102,10 +124,23 @@ class GridEditor extends HTMLElement {
           cellEl.style['background-color'] = this.color;
         });
         cellEl.addEventListener('mouseout', (evt) => {
-          cellEl.style['background-color'] = cellEl.dataset.color;
+          cellEl.style['background-color'] = row[j].color;
         });
       }
     }
+
+    this._render = () => {
+      const rowEls = gridEl.querySelectorAll('.row');
+      for (let i=0; i<rowEls.length; i++) {
+        const rowEl = rowEls[i];
+        const cellEls = rowEl.querySelectorAll('.cell');
+        for (let j=0; j<cellEls.length; j++) {
+          const cellEl = cellEls[j];
+          const color = this.grid[i][j].color;
+          cellEl.style['background-color'] = color;
+        }
+      }
+    };
 
     let scale = 1.0;
     let tx = 0.0;
