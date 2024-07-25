@@ -87,8 +87,8 @@ class GridEditor extends HTMLElement {
 
     const gridEl = docFrag.querySelector('.grid');
 
-    const numRows = 8;
-    const numCols = 8;
+    const numRows = 16;
+    const numCols = 16;
 
     this.grid = [];
 
