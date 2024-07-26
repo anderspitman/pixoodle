@@ -65,13 +65,21 @@ class GridEditor extends HTMLElement {
   }
 
   get grid() {
+    if (!this._grid) {
+      this._grid = [];
+    }
     return this._grid;
   }
   set grid(_) {
-    this._grid = _;
-    if (this._render) {
+    if (_.length > 0) {
+      this.resize(_[0].length, _.length);
+      this._grid = _;
       this._render();
     }
+  }
+
+  resize(width, height) {
+    return this._resize(width, height);
   }
 
   connectedCallback() {
@@ -87,47 +95,60 @@ class GridEditor extends HTMLElement {
 
     const gridEl = docFrag.querySelector('.grid');
 
-    const numRows = 16;
-    const numCols = 16;
+    this._resize = (width, height) => {
 
-    this.grid = [];
-
-    for (let i=0; i<numRows; i++) {
-
-      const row = [];
-      this.grid.push(row);
-
-      const rowEl = document.createElement('div');
-      rowEl.classList.add('row');
-      gridEl.appendChild(rowEl);
-
-      for (let j=0; j<numCols; j++) {
-
-        const cell = {
-          color: this.color,
-        };
-        row.push(cell);
-
-        const cellEl = document.createElement('div');
-        cellEl.classList.add('cell');
-        rowEl.appendChild(cellEl);
-
-        cellEl.addEventListener('click', (evt) => {
-          cell.color = this.color;
-          this.grid[i][j] = {
-            color: this.color
-          };
-          cellEl.style['background-color'] = this.color;
-        });
-
-        cellEl.addEventListener('mouseover', (evt) => {
-          cellEl.style['background-color'] = this.color;
-        });
-        cellEl.addEventListener('mouseout', (evt) => {
-          cellEl.style['background-color'] = this.grid[i][j].color;
-        });
+      if (width * height > 10000) {
+        return;
       }
-    }
+
+      const grid = this.grid;
+      
+      while (grid.length > height) {
+        grid.pop();
+        gridEl.removeChild(gridEl.lastChild);
+      }
+
+      while (grid.length < height) {
+        grid.push([]);
+        const rowEl = document.createElement('div');
+        rowEl.classList.add('row');
+        gridEl.appendChild(rowEl);
+      }
+
+      for (let i=0; i<grid.length; i++) {
+
+        const row = grid[i];
+        const rowEl = gridEl.children[i];
+
+        while (row.length > width) {
+          row.pop();
+          rowEl.removeChild(rowEl.lastChild);
+        }
+
+        for (let j=row.length; j<width; j++) {
+          row.push({
+            color: null,
+          });
+          const cellEl = document.createElement('div');
+          cellEl.classList.add('cell');
+          rowEl.appendChild(cellEl);
+
+          cellEl.addEventListener('click', (evt) => {
+            this.grid[i][j] = {
+              color: this.color
+            };
+            cellEl.style['background-color'] = this.color;
+          });
+
+          cellEl.addEventListener('mouseover', (evt) => {
+            cellEl.style['background-color'] = this.color;
+          });
+          cellEl.addEventListener('mouseout', (evt) => {
+            cellEl.style['background-color'] = this.grid[i][j].color;
+          });
+        }
+      }
+    };
 
     this._render = () => {
       const rowEls = gridEl.querySelectorAll('.row');
@@ -245,6 +266,8 @@ class GridEditor extends HTMLElement {
     }
 
     this.shadowRoot.appendChild(docFrag);
+
+    this.resize(8, 8);
   }
 }
 

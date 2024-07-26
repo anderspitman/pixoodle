@@ -17,11 +17,15 @@ const template = `
     }
 
     pixoodle-grid-editor {
-      flex: 2;
+      flex: 3;
     }
 
     .color-container {
-      flex: 1;
+      flex: 2;
+    }
+
+    .dimension-input {
+      width: 32px;
     }
   </style>
 
@@ -34,6 +38,13 @@ const template = `
     <div>
     <button id='save-btn'>Save</button>
     <input type='file' id='file-input' />
+    <div>
+      <label for='width-input'>Width:</label>
+      <input type='text' id='width-input' />
+      <label for='height-input'>Height:</label>
+      <input type='text' id='height-input' />
+      <button id='resize-btn'>Resize</button>
+    </div>
   </div>
 `;
 
@@ -61,6 +72,9 @@ class Editor extends HTMLElement {
     const setPrimaryBtn = docFrag.querySelector('#set-primary-btn');
     const saveBtnEl = docFrag.querySelector('#save-btn');
     const fileInput = docFrag.querySelector('#file-input');
+    const resizeBtnEl = docFrag.querySelector('#resize-btn');
+    const widthInputEl = docFrag.querySelector('#width-input');
+    const heightInputEl = docFrag.querySelector('#height-input');
 
     palette.addEventListener('swatch-change', (evt) => {
       gridEditor.color = evt.detail.color;
@@ -101,6 +115,13 @@ class Editor extends HTMLElement {
       };
 
       reader.readAsText(file);
+    });
+
+    resizeBtnEl.addEventListener('click', (evt) => {
+      const width = Number(widthInputEl.value);
+      const height = Number(heightInputEl.value);
+
+      gridEditor.resize(width, height);
     });
 
     this.shadowRoot.appendChild(docFrag);
