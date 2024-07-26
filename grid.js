@@ -114,7 +114,7 @@ class GridEditor extends HTMLElement {
 
         cellEl.addEventListener('click', (evt) => {
           cell.color = this.color;
-          row[j] = {
+          this.grid[i][j] = {
             color: this.color
           };
           cellEl.style['background-color'] = this.color;
@@ -124,7 +124,7 @@ class GridEditor extends HTMLElement {
           cellEl.style['background-color'] = this.color;
         });
         cellEl.addEventListener('mouseout', (evt) => {
-          cellEl.style['background-color'] = row[j].color;
+          cellEl.style['background-color'] = this.grid[i][j].color;
         });
       }
     }
