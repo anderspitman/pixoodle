@@ -12,16 +12,13 @@ const template = `
     .editor {
       width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
     }
 
     pixoodle-grid-editor {
-      flex: 3;
+      height: 60vh;
     }
 
     .color-container {
-      flex: 2;
     }
 
     .dimension-input {
