@@ -33,6 +33,14 @@ class Palette extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
+  get colors() {
+    return this._colors;
+  }
+  set colors(_) {
+    this._colors = _;
+    this._updateColors();
+  }
+
   get currentSwatchColor() {
     return this._currentSwatchColor;
   }
@@ -50,7 +58,7 @@ class Palette extends HTMLElement {
 
     const docFrag = templateEl.content.cloneNode(true);
 
-    const allColors = [
+    this._colors = [
       ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff'],
       ['#111111', '#333333', '#555555', '#777777', '#999999', '#bbbbbb', '#dddddd', '#eeeeee'],
     ];
@@ -60,9 +68,9 @@ class Palette extends HTMLElement {
 
     const colorsEl = docFrag.querySelector('.colors');
 
-    for (let i=0; i<allColors.length; i++) {
+    for (let i=0; i<this.colors.length; i++) {
 
-      const colors = allColors[i];
+      const colors = this.colors[i];
 
       const colorListEl = document.createElement('div');
       colorListEl.classList.add('color-list');
@@ -80,17 +88,17 @@ class Palette extends HTMLElement {
           selectedPaletteIdx = i;
           selectedSwatchIdx = j;
 
-          updateColors();
+          this._updateColors();
         });
       }
     }
 
     this._setCurrentSwatchColor  = () => {
-      allColors[selectedPaletteIdx][selectedSwatchIdx] = this._currentSwatchColor;
-      updateColors();
+      this.colors[selectedPaletteIdx][selectedSwatchIdx] = this._currentSwatchColor;
+      this._updateColors();
     }
 
-    const updateColors = () => {
+    this._updateColors = () => {
       const colorListEls = colorsEl.querySelectorAll('.color-list');
       for (let i=0; i<colorListEls.length; i++) {
 
@@ -99,7 +107,7 @@ class Palette extends HTMLElement {
         const colorEls = colorListEl.querySelectorAll('.color');
 
         for (let j=0; j<colorEls.length; j++) {
-          colorEls[j].style['background-color'] = allColors[i][j];
+          colorEls[j].style['background-color'] = this.colors[i][j];
         }
 
       }
@@ -108,12 +116,12 @@ class Palette extends HTMLElement {
         bubbles: true,
         composed: true,
         detail: {
-          color: allColors[selectedPaletteIdx][selectedSwatchIdx],
+          color: this.colors[selectedPaletteIdx][selectedSwatchIdx],
         },
       }));
     };
 
-    updateColors();
+    this._updateColors();
 
     this.shadowRoot.appendChild(docFrag);
   }

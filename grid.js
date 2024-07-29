@@ -138,6 +138,15 @@ class GridEditor extends HTMLElement {
               color: this.color
             };
             cellEl.style['background-color'] = this.color;
+
+
+            this.shadowRoot.dispatchEvent(new CustomEvent('grid-update', {
+              bubbles: true,
+              composed: true,
+              detail: {
+                grid: this.grid,
+              },
+            }));
           });
 
           cellEl.addEventListener('mouseover', (evt) => {

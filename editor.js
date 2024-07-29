@@ -73,6 +73,10 @@ class Editor extends HTMLElement {
     const widthInputEl = docFrag.querySelector('#width-input');
     const heightInputEl = docFrag.querySelector('#height-input');
 
+    gridEditor.addEventListener('grid-update', (evt) => {
+      save();
+    });
+
     palette.addEventListener('swatch-change', (evt) => {
       gridEditor.color = evt.detail.color;
     });
@@ -85,6 +89,7 @@ class Editor extends HTMLElement {
     setPrimaryBtn.addEventListener('click', (evt) => {
       if (color) {
         palette.currentSwatchColor = color.hex;
+        save();
       }
     });
 
@@ -119,9 +124,29 @@ class Editor extends HTMLElement {
       const height = Number(heightInputEl.value);
 
       gridEditor.resize(width, height);
+      save();
     });
 
+    function save() {
+      localStorage.setItem('state', JSON.stringify({
+        version: "pixoodle 0.1.0",
+        grid: gridEditor.grid,
+        palette: palette.colors,
+      }, null, 2));
+    }
+
+    function restore() {
+      const dataJson = localStorage.getItem('state');
+      if (dataJson) {
+        const data = JSON.parse(dataJson);
+        gridEditor.grid = data.grid;
+        palette.colors = data.palette;
+      }
+    }
+
     this.shadowRoot.appendChild(docFrag);
+
+    restore();
   }
 }
 
