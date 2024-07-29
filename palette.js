@@ -51,8 +51,8 @@ class Palette extends HTMLElement {
     const docFrag = templateEl.content.cloneNode(true);
 
     const allColors = [
-      ['#000000', '#ffffff'],
-      ['#ff0000', '#00ff00', '#0000ff'],
+      ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff'],
+      ['#111111', '#333333', '#555555', '#777777', '#999999', '#bbbbbb', '#dddddd', '#eeeeee'],
     ];
 
     let selectedPaletteIdx = 0;
