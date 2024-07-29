@@ -37,9 +37,9 @@ const template = `
     <input type='file' id='file-input' />
     <div>
       <label for='width-input'>Width:</label>
-      <input class='dimension-input' type='text' id='width-input' />
+      <input class='dimension-input' type='number' id='width-input' />
       <label for='height-input'>Height:</label>
-      <input class='dimension-input' type='text' id='height-input' />
+      <input class='dimension-input' type='number' id='height-input' />
       <button id='resize-btn'>Resize</button>
     </div>
   </div>
